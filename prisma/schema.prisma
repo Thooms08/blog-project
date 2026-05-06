@@ -7,25 +7,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Ini adalah representasi tabel 'Post' di database flavory_blog kamu
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   title     String
-  slug      String   @unique
-  excerpt   String?  @db.Text
-  content   String   @db.LongText
-  image     String?  // URL gambar thumbnail
-  views     Int      @default(0)
+  slug      String     @unique
+  excerpt   String?    @db.Text
+  content   String     @db.LongText
+  image     String?    
+  views     Int        @default(0)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  
+  // Relasi M2M: Postingan punya banyak kategori
+  kategoris Kategori[] 
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  username  String   @unique
+  email     String   @unique
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model User {
+model Kategori {
   id         Int      @id @default(autoincrement())
-  name       String
-  username   String   @unique
-  email      String   @unique
-  password   String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  nama       String   @unique // Kasih unique biar gak ada kategori kembar
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  posts      Post[]
 }

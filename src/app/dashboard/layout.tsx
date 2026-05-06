@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const menu = [
     { name: "Dashboard", path: "/dashboard", icon: "fa-chart-line" },
     { name: "Blog", path: "/dashboard/blog", icon: "fa-newspaper" },
-    { name: "Kategori", path: "/dashboard/category", icon: "fa-tags" },
+    { name: "Kategori", path: "/dashboard/kategori", icon: "fa-tags" },
     { name: "Ulasan", path: "/dashboard/reviews", icon: "fa-comments" },
     { name: "Profil", path: "/dashboard/profile", icon: "fa-user-shield" },
   ];

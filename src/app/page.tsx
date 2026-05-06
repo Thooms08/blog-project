@@ -42,7 +42,7 @@ export default async function HomePage() {
       {/* Header / Hero Section */}
       <header className="bg-orange-500 text-white py-20 px-6 text-center shadow-md">
         <h1 className="text-5xl font-extrabold tracking-tight mb-4">
-          Flavory Blog
+          Thomas 
         </h1>
         <p className="text-lg text-orange-100 max-w-2xl mx-auto">
           Eksplorasi cerita, ide, dan wawasan terbaru yang penuh rasa.

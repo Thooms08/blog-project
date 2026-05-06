@@ -62,8 +62,14 @@ export default async function BlogListPage() {
                     {new Date(post.createdAt).toLocaleDateString('id-ID')}
                   </td>
                   <td className="p-4 text-right space-x-2">
-                    <button className="text-slate-400 hover:text-white transition-colors"><i className="fas fa-edit"></i></button>
-                    <button className="text-slate-400 hover:text-red-500 transition-colors"><i className="fas fa-trash-alt"></i></button>
+                    {/* Ini tombol Edit yang mengarahkan user ke halaman Edit spesifik sesuai ID-nya */}
+                    <Link href={`/dashboard/blog/edit/${post.slug}`} className="text-slate-400 hover:text-orange-500 transition-colors">
+                      <i className="fas fa-edit"></i>
+                    </Link>
+                    
+                    <button className="text-slate-400 hover:text-red-500 transition-colors">
+                      <i className="fas fa-trash-alt"></i>
+                    </button>
                   </td>
                 </tr>
               ))
