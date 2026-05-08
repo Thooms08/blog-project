@@ -11,7 +11,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: "Dashboard", path: "/dashboard", icon: "fa-chart-line" },
     { name: "Blog", path: "/dashboard/blog", icon: "fa-newspaper" },
     { name: "Kategori", path: "/dashboard/kategori", icon: "fa-tags" },
-    { name: "Ulasan", path: "/dashboard/reviews", icon: "fa-comments" },
+    { name: "Ulasan", path: "/dashboard/ulasan", icon: "fa-comments" },
     { name: "Profil", path: "/dashboard/profile", icon: "fa-user-shield" },
   ];
 

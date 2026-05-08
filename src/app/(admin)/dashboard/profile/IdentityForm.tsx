@@ -6,8 +6,13 @@ import { updateProfileAction } from "@/lib/actions/profile.actions";
 import { SubmitButton } from "./SubmitButton";
 import { cyberpunkAlert } from "@/lib/swal-theme";
 import { useRouter } from "next/navigation";
+import type { User } from "@prisma/client";
 
-export default function IdentityForm({ user }: { user: any }) {
+interface IdentityFormProps {
+  user: User;
+}
+
+export default function IdentityForm({ user }: IdentityFormProps) {
   const router = useRouter();
   // State untuk menangkap respon dari Server Action
   const [state, formAction] = useFormState(updateProfileAction, null);
@@ -46,13 +51,13 @@ export default function IdentityForm({ user }: { user: any }) {
           <label className={labelClass}>Nama_Alias</label>
           <div className="relative group">
             <i className="fas fa-user-ninja absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-orange-500 transition-colors"></i>
-            <input 
-              type="text" 
-              name="name" 
-              defaultValue={user.name} 
+            <input
+              type="text"
+              name="name"
+              defaultValue={user.name}
               placeholder="Masukkan nama..."
-              required 
-              className={inputClass} 
+              required
+              className={inputClass}
             />
           </div>
         </div>
@@ -62,13 +67,13 @@ export default function IdentityForm({ user }: { user: any }) {
           <label className={labelClass}>Akses_Username</label>
           <div className="relative group">
             <i className="fas fa-at absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-orange-500 transition-colors"></i>
-            <input 
-              type="text" 
-              name="username" 
-              defaultValue={user.username} 
+            <input
+              type="text"
+              name="username"
+              defaultValue={user.username}
               placeholder="username_baru"
-              required 
-              className={inputClass} 
+              required
+              className={inputClass}
             />
           </div>
         </div>
@@ -78,13 +83,13 @@ export default function IdentityForm({ user }: { user: any }) {
           <label className={labelClass}>Jalur_Komunikasi_Email</label>
           <div className="relative group">
             <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-orange-500 transition-colors"></i>
-            <input 
-              type="email" 
-              name="email" 
-              defaultValue={user.email} 
+            <input
+              type="email"
+              name="email"
+              defaultValue={user.email}
               placeholder="alamat@email.com"
-              required 
-              className={inputClass} 
+              required
+              className={inputClass}
             />
           </div>
         </div>

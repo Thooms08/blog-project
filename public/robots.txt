@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /auth/login/
+Disallow: /auth/register/
+
+Sitemap: https://blog.flavory.id/sitemap.xml

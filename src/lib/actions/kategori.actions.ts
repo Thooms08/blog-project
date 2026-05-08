@@ -8,20 +8,20 @@ export async function createKategoriAction(data: { nama: string }[]) {
   try {
     // Filter input yang kosong
     const validData = data.filter(item => item.nama.trim() !== "");
-    
+
     if (validData.length === 0) {
       return { success: false, message: "DATA_TIDAK_VALID: Nama kategori tidak boleh kosong." };
     }
 
     // skipDuplicates: true agar kalau Admin masukin nama kategori yang udah ada, gak error
-    await prisma.kategori.createMany({ 
+    await prisma.kategori.createMany({
       data: validData,
-      skipDuplicates: true 
+      skipDuplicates: true
     });
-    
+
     revalidatePath("/dashboard/kategori");
     return { success: true, message: "KATEGORI_BERHASIL_DITAMBAHKAN" };
-  } catch (error) {
+  } catch {
     return { success: false, message: "CRITICAL_ERROR: Gagal menyimpan data." };
   }
 }
@@ -30,14 +30,14 @@ export async function createKategoriAction(data: { nama: string }[]) {
 export async function updateKategoriAction(id: number, nama: string) {
   try {
     if (!nama.trim()) return { success: false, message: "NAMA_TIDAK_BOLEH_KOSONG" };
-    
+
     await prisma.kategori.update({
       where: { id },
       data: { nama },
     });
     revalidatePath("/dashboard/kategori");
     return { success: true, message: "KATEGORI_BERHASIL_DIPERBARUI" };
-  } catch (error) {
+  } catch {
     return { success: false, message: "GAGAL_UPDATE_DATA: Mungkin nama sudah dipakai." };
   }
 }
@@ -48,7 +48,7 @@ export async function deleteKategoriAction(id: number) {
     await prisma.kategori.delete({ where: { id } });
     revalidatePath("/dashboard/kategori");
     return { success: true, message: "KATEGORI_BERHASIL_DIHAPUS" };
-  } catch (error) {
+  } catch {
     return { success: false, message: "GAGAL_MENGHAPUS_DATA" };
   }
 }

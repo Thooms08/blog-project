@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 
-export async function updateProfileAction(prevState: any, formData: FormData) {
+export async function updateProfileAction(prevState: { success: boolean; title: string; message: string } | null, formData: FormData) {
   const userId = formData.get("userId") as string;
   const name = formData.get("name") as string;
   const username = formData.get("username") as string;
@@ -17,12 +17,12 @@ export async function updateProfileAction(prevState: any, formData: FormData) {
     });
     revalidatePath("/dashboard/profile");
     return { success: true, title: "SISTEM DIPERBARUI", message: "Data identitas berhasil disinkronisasi." };
-  } catch (error) {
+  } catch {
     return { success: false, title: "ERROR SISTEM", message: "Gagal menyambung ke database." };
   }
 }
 
-export async function updatePasswordAction(prevState: any, formData: FormData) {
+export async function updatePasswordAction(prevState: { success: boolean; title: string; message: string } | null, formData: FormData) {
   const userId = formData.get("userId") as string;
   const password = formData.get("password") as string;
 
@@ -34,10 +34,10 @@ export async function updatePasswordAction(prevState: any, formData: FormData) {
       where: { id: Number(userId) },
       data: { password: hashedPassword }, // 3. SIMPAN VERSI HASH
     });
-    
+
     revalidatePath("/dashboard/profile");
     return { success: true, title: "DEKRIPSI BERHASIL", message: "Sandi baru telah diamankan di database." };
-  } catch (error) {
+  } catch {
     return { success: false, title: "ERROR KEAMANAN", message: "Gagal memperbarui sandi." };
   }
 }

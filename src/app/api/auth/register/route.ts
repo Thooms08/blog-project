@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ message: "User berhasil dibuat", user: { id: user.id } }, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

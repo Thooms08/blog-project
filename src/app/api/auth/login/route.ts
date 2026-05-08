@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     // 3. Sukses (Di sini biasanya set cookie/session)
     return NextResponse.json({ message: "Login Berhasil", user: { id: user.id, name: user.name } });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

@@ -15,10 +15,13 @@ const Editor = ({ onChange, value }: EditorProps) => {
     <div className="prose-orange cyberpunk-editor">
       <CKEditor
         // SOLUSI: Cast ke 'any' untuk melewati pengecekan tipe data build yang ketat
-        editor={ ClassicEditor as any }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        editor={ClassicEditor as any}
         data={value || ""}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onReady={(editor: any) => {
           // Atur tinggi editor
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           editor.editing.view.change((writer: any) => {
             writer.setStyle('min-height', '300px', editor.editing.view.document.getRoot()!);
           });
@@ -34,7 +37,7 @@ const Editor = ({ onChange, value }: EditorProps) => {
           ],
         }}
       />
-      
+
       {/* CSS internal Cyberpunk Orange Theme */}
       <style jsx global>{`
         .ck-editor__editable {

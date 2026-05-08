@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import Image from "next/image";
 
 export default async function DashboardPage() {
   const posts = await prisma.post.findMany({ orderBy: { createdAt: 'desc' } });
@@ -20,11 +19,11 @@ export default async function DashboardPage() {
         <div className="flex items-end gap-2 h-40">
           {posts.slice(0, 7).reverse().map((p, i) => (
             <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-              <div 
-                className="w-full bg-orange-600/20 border-t-2 border-orange-500 group-hover:bg-orange-500 transition-all rounded-t-sm" 
+              <div
+                className="w-full bg-orange-600/20 border-t-2 border-orange-500 group-hover:bg-orange-500 transition-all rounded-t-sm"
                 style={{ height: `${(p.views / (totalViews || 1)) * 100 + 10}%` }}
               ></div>
-              <span className="text-[8px] font-mono text-slate-500">DAY_{i+1}</span>
+              <span className="text-[8px] font-mono text-slate-500">DAY_{i + 1}</span>
             </div>
           ))}
         </div>
@@ -46,11 +45,11 @@ export default async function DashboardPage() {
                 </p>
               </div>
             </div>
-            
+
             <div className="p-5 space-y-3">
               <h3 className="font-bold text-lg line-clamp-1 group-hover:text-orange-500 transition-colors uppercase tracking-tight">{post.title}</h3>
               <p className="text-slate-500 text-xs line-clamp-2 font-mono">{post.excerpt}</p>
-              
+
               <div className="flex justify-between items-center pt-4 border-t border-slate-800">
                 <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white">
                   <i className="fas fa-share-nodes mr-2"></i> Share

@@ -1,12 +1,12 @@
 "use client";
 
 import dynamic from 'next/dynamic';
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBlogAction, updateBlogAction } from '@/lib/actions/blog.actions';
 import { CyberAlert } from '../../kategori/sweetalert';
 
-const CustomEditor = dynamic(() => import('@/components/Editor'), { 
+const CustomEditor = dynamic(() => import('@/components/Editor'), {
   ssr: false,
   loading: () => <div className="h-64 bg-slate-900 animate-pulse rounded-xl border-2 border-slate-800 flex items-center justify-center text-slate-500">LOADING_EDITOR_MODULE...</div>
 });
@@ -63,14 +63,14 @@ export default function CreateBlogClient({ kategoris, initialData }: { kategoris
 
     startTransition(async () => {
       const payload = { title, excerpt, content, imageBase64, kategoriIds: selectedKategoris };
-      
+
       let res;
       if (isEditMode) {
         res = await updateBlogAction(initialData.id, payload);
       } else {
         res = await createBlogAction(payload);
       }
-      
+
       if (res?.success) {
         CyberAlert.success("BERHASIL", res.message).then(() => router.push("/dashboard/blog"));
       } else {
@@ -83,7 +83,7 @@ export default function CreateBlogClient({ kategoris, initialData }: { kategoris
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 animate-in fade-in duration-500">
-      
+
       {/* METADATA & GAMBAR */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-slate-900 border-t-4 border-orange-600 p-6 rounded-2xl shadow-xl space-y-4">

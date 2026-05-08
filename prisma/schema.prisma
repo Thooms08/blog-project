@@ -20,6 +20,19 @@ model Post {
   
   // Relasi M2M: Postingan punya banyak kategori
   kategoris Kategori[] 
+  ulasans   Ulasan[]
+}
+
+model Ulasan {
+  id         Int      @id @default(autoincrement())
+  post_id    Int
+  rating     Int      
+  comment    String?  @db.Text
+  ip_address String?
+  user_agent String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  post       Post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
 }
 
 model User {
