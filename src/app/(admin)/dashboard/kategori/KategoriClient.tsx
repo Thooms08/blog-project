@@ -5,16 +5,16 @@ import { createKategoriAction, updateKategoriAction, deleteKategoriAction } from
 import { CyberAlert } from "./sweetalert";
 
 // Definisikan Tipe Data baru (ada relasi count posts)
-type Kategori = { 
-  id: number; 
-  nama: string; 
-  _count: { posts: number }; 
+type Kategori = {
+  id: number;
+  nama: string;
+  _count: { posts: number };
 };
 
 // PERBAIKAN 1: Tambahkan default value = [] pada props kategoris
 export default function KategoriClient({ kategoris = [] }: { kategoris: Kategori[] }) {
   const [isPending, startTransition] = useTransition();
-  
+
   // State Form Multi-Input (Hanya Butuh Nama)
   const [inputs, setInputs] = useState([{ nama: "" }]);
 
@@ -74,7 +74,7 @@ export default function KategoriClient({ kategoris = [] }: { kategoris: Kategori
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      
+
       {/* FORM INPUT KATEGORI (MANDIRI) */}
       <section className="bg-slate-900 border-t-4 border-orange-600 p-6 rounded-2xl shadow-xl">
         <h2 className="text-xl font-black text-white uppercase tracking-widest mb-6 flex items-center gap-3">
@@ -86,12 +86,12 @@ export default function KategoriClient({ kategoris = [] }: { kategoris: Kategori
           {inputs?.map((input, index) => (
             <div key={index} className="flex gap-4 items-center bg-slate-800/50 p-4 rounded-lg border border-slate-700">
               <i className="fas fa-hashtag text-slate-500 ml-2"></i>
-              <input 
-                type="text" 
-                placeholder="Misal: Teknologi, Tutorial, Gaya Hidup..." 
-                value={input.nama} 
-                onChange={(e) => handleChange(index, e.target.value)} 
-                className={inputClass} 
+              <input
+                type="text"
+                placeholder="Misal: Teknologi, Tutorial, Gaya Hidup..."
+                value={input.nama}
+                onChange={(e) => handleChange(index, e.target.value)}
+                className={inputClass}
               />
               {inputs.length > 1 && (
                 <button onClick={() => handleRemoveInput(index)} className="p-3 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-all">
@@ -112,8 +112,8 @@ export default function KategoriClient({ kategoris = [] }: { kategoris: Kategori
         </div>
       </section>
 
-      {/* TABEL DATA KATEGORI */}
-      <section className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+      {/* TABEL DATA KATEGORI - DESKTOP */}
+      <section className="hidden md:block bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
         <table className="w-full text-left">
           <thead>
             <tr className="bg-slate-950 border-b border-slate-800">
@@ -124,7 +124,6 @@ export default function KategoriClient({ kategoris = [] }: { kategoris: Kategori
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {/* PERBAIKAN 3: Pengecekan aman untuk length dan map */}
             {(!kategoris || kategoris.length === 0) ? (
               <tr><td colSpan={4} className="p-8 text-center text-slate-500 font-mono">DATABASE_KOSONG</td></tr>
             ) : (
@@ -163,6 +162,59 @@ export default function KategoriClient({ kategoris = [] }: { kategoris: Kategori
             )}
           </tbody>
         </table>
+      </section>
+
+      {/* CARD LAYOUT - MOBILE */}
+      <section className="md:hidden space-y-4">
+        {(!kategoris || kategoris.length === 0) ? (
+          <div className="p-8 text-center text-slate-500 font-mono bg-slate-900 rounded-lg border border-slate-800">
+            DATABASE_KOSONG
+          </div>
+        ) : (
+          kategoris?.map((kat, idx) => (
+            <div key={kat.id} className="bg-slate-900 border border-slate-800 rounded-lg p-4 space-y-3 hover:border-orange-500 transition-all">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1">
+                  {editingId === kat.id ? (
+                    <input type="text" value={editNama} onChange={(e) => setEditNama(e.target.value)} className={`${inputClass} !p-2`} autoFocus />
+                  ) : (
+                    <span className="font-bold text-slate-200 text-base">
+                      <span className="text-orange-500 mr-2">#{idx + 1}</span>{kat.nama}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="bg-slate-800/50 rounded p-2">
+                <span className="text-xs font-mono text-slate-400">
+                  <span className="text-orange-500 font-bold">{kat._count?.posts || 0}</span> postingan
+                </span>
+              </div>
+
+              <div className="flex gap-2 pt-2 border-t border-slate-800">
+                {editingId === kat.id ? (
+                  <>
+                    <button onClick={() => handleSimpanEdit(kat.id)} disabled={isPending} className="flex-1 py-2 bg-green-600/20 hover:bg-green-600/40 text-green-400 rounded text-xs font-bold transition-colors">
+                      <i className="fas fa-check"></i> Simpan
+                    </button>
+                    <button onClick={() => setEditingId(null)} className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded text-xs font-bold transition-colors">
+                      <i className="fas fa-times"></i> Batal
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => handleEditClick(kat)} className="flex-1 py-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 rounded text-xs font-bold transition-colors">
+                      <i className="fas fa-edit"></i> Edit
+                    </button>
+                    <button onClick={() => handleHapus(kat.id)} className="flex-1 py-2 bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded text-xs font-bold transition-colors">
+                      <i className="fas fa-trash-alt"></i> Hapus
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          ))
+        )}
       </section>
     </div>
   );

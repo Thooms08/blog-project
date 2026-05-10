@@ -20,8 +20,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Password salah" }, { status: 401 });
     }
 
-    // 3. Sukses (Di sini biasanya set cookie/session)
-    return NextResponse.json({ message: "Login Berhasil", user: { id: user.id, name: user.name } });
+    // 3. Set session cookie
+    const response = NextResponse.json({ message: "Login Berhasil", user: { id: user.id, name: user.name } });
+    response.cookies.set("admin_session", JSON.stringify({ userId: user.id, username: user.username }), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7, // 7 hari
+      path: "/",
+    });
+
+    return response;
   } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
