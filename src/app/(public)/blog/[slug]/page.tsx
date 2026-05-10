@@ -68,6 +68,43 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
 
   // Increment views ketika user membaca artikel
   await incrementViews(params.slug);
+  const displayViews = post.views + 1;
+
+  const categoryIds = post.kategoris.map((kat) => kat.id);
+  let recommendedPosts = await prisma.post.findMany({
+    where: {
+      slug: { not: params.slug },
+      kategoris: {
+        some: {
+          id: { in: categoryIds },
+        },
+      },
+    },
+    include: {
+      kategoris: true,
+    },
+    orderBy: [
+      { views: 'desc' },
+      { createdAt: 'desc' },
+    ],
+    take: 4,
+  });
+
+  if (recommendedPosts.length === 0) {
+    recommendedPosts = await prisma.post.findMany({
+      where: {
+        slug: { not: params.slug },
+      },
+      include: {
+        kategoris: true,
+      },
+      orderBy: [
+        { views: 'desc' },
+        { createdAt: 'desc' },
+      ],
+      take: 4,
+    });
+  }
 
   return (
     <article className="max-w-3xl mx-auto py-12 px-6">
@@ -93,19 +130,25 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
           {post.title}
         </h1>
 
-        <div className="flex items-center justify-center md:justify-start gap-4 text-sm text-slate-500 font-medium border-b border-slate-200 pb-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
-              <i className="fa-solid fa-user"></i>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-sm text-slate-500 font-medium border-b border-slate-200 pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+                <i className="fa-solid fa-user"></i>
+              </div>
+              <span>Penulis: <strong className="text-slate-800">Admin</strong></span>
             </div>
-            <span>Penulis: <strong className="text-slate-800">Admin</strong></span>
+            <div className="flex items-center gap-2">
+              <i className="fa-regular fa-calendar text-orange-400"></i>
+              {new Date(post.createdAt).toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric'
+              })}
+            </div>
           </div>
-          <span>•</span>
-          <div className="flex items-center gap-2">
-            <i className="fa-regular fa-calendar text-orange-400"></i>
-            {new Date(post.createdAt).toLocaleDateString('id-ID', {
-              day: 'numeric', month: 'long', year: 'numeric'
-            })}
+
+          <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-orange-700 font-semibold shadow-sm">
+            <i className="fa-solid fa-eye"></i>
+            {displayViews.toLocaleString()} ditonton
           </div>
         </div>
       </header>
@@ -136,6 +179,53 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
         className="prose prose-lg prose-slate max-w-none text-slate-800 prose-p:text-slate-800 prose-a:text-orange-500 hover:prose-a:text-orange-600 prose-headings:text-slate-900 mb-16"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
+
+      {recommendedPosts.length > 0 && (
+        <section className="mb-16">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-orange-500 font-bold mb-2">Rekomendasi</p>
+              <h2 className="text-2xl font-bold text-slate-900">Artikel populer di kategori ini</h2>
+            </div>
+            <p className="text-sm text-slate-500 max-w-xl">
+              Ditampilkan berdasarkan jumlah tayangan terbanyak dari kategori yang sama.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            {recommendedPosts.map((recommendation) => (
+              <article key={recommendation.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm transition hover:shadow-lg">
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {recommendation.kategoris.map((kat) => (
+                    <span key={kat.id} className="bg-white text-orange-600 text-[11px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
+                      {kat.nama}
+                    </span>
+                  ))}
+                </div>
+                <Link href={`/blog/${recommendation.slug}`} className="group">
+                  <h3 className="text-lg font-semibold text-slate-900 transition-colors group-hover:text-orange-500 mb-3 line-clamp-2">
+                    {recommendation.title}
+                  </h3>
+                </Link>
+                <p className="text-sm text-slate-600 mb-4 line-clamp-2">
+                  {recommendation.excerpt || recommendation.content.substring(0, 100) + '...'}
+                </p>
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span className="inline-flex items-center gap-2">
+                    <i className="fa-solid fa-eye"></i>
+                    {recommendation.views.toLocaleString()} views
+                  </span>
+                  <span>
+                    {new Date(recommendation.createdAt).toLocaleDateString('id-ID', {
+                      day: 'numeric', month: 'short', year: 'numeric'
+                    })}
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* GARIS PEMBATAS */}
       <hr className="border-t-2 border-dashed border-slate-200 mb-8" />
