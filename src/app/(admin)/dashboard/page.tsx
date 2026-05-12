@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import Image from "next/image";
 
 export default async function DashboardPage() {
   const posts = await prisma.post.findMany({ orderBy: { createdAt: 'desc' } });
@@ -35,7 +36,7 @@ export default async function DashboardPage() {
           <div key={post.id} className="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 group hover:border-orange-500 transition-all">
             <div className="relative h-48 w-full bg-slate-800">
               {post.image ? (
-                <img src={post.image} alt="thumbnail" className="object-cover w-full h-full opacity-80 group-hover:opacity-100 transition-all" />
+                <Image src={post.image} alt="thumbnail" fill className="object-cover opacity-80 group-hover:opacity-100 transition-all" />
               ) : (
                 <div className="flex items-center justify-center h-full text-slate-700 italic">NO_IMAGE</div>
               )}

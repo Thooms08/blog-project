@@ -47,7 +47,7 @@ async function saveImageLocally(base64Data: string, slug: string) {
   const extension = matches[1].split('/')[1]; // dapatkan format (jpeg, png, dll)
   const buffer = Buffer.from(matches[2], 'base64');
   const fileName = `${slug}-${Date.now()}.${extension}`; // Nama file unik
-  
+
   // Pastikan folder public/assets/post tersedia, jika belum maka buat otomatis
   const dirPath = path.join(process.cwd(), 'public', 'assets', 'post');
   if (!fs.existsSync(dirPath)) {
@@ -58,7 +58,7 @@ async function saveImageLocally(base64Data: string, slug: string) {
   fs.writeFileSync(filePath, buffer);
 
   // Kembalikan path URL yang akan disimpan ke database Prisma
-  return `/assets/post/${fileName}`; 
+  return `/assets/post/${fileName}`;
 }
 
 
@@ -67,11 +67,11 @@ async function saveImageLocally(base64Data: string, slug: string) {
 // ==========================================
 
 // A. ACTION BUAT BLOG BARU
-export async function createBlogAction(data: { 
-  title: string; 
-  excerpt: string; 
-  content: string; 
-  imageBase64?: string; 
+export async function createBlogAction(data: {
+  title: string;
+  excerpt: string;
+  content: string;
+  imageBase64?: string;
   kategoriIds: number[];
 }) {
   try {
@@ -82,7 +82,7 @@ export async function createBlogAction(data: {
 
     // 2. Dapatkan Slug Unik
     const slug = await createUniqueSlug(data.title);
-    
+
     // 3. Proses Gambar (Jika ada)
     let imagePath = null;
     if (data.imageBase64) {
@@ -92,14 +92,14 @@ export async function createBlogAction(data: {
     // 4. Simpan ke Database
     await prisma.post.create({
       data: {
-        title: data.title, 
-        slug: slug, 
-        excerpt: data.excerpt, 
-        content: data.content, 
+        title: data.title,
+        slug: slug,
+        excerpt: data.excerpt,
+        content: data.content,
         image: imagePath,
         // Menyambungkan relasi Many-to-Many Kategori secara otomatis
-        kategoris: { 
-          connect: data.kategoriIds.map((id) => ({ id })) 
+        kategoris: {
+          connect: data.kategoriIds.map((id) => ({ id }))
         }
       },
     });
@@ -114,11 +114,11 @@ export async function createBlogAction(data: {
 }
 
 // B. ACTION EDIT/UPDATE BLOG
-export async function updateBlogAction(id: number, data: { 
-  title: string; 
-  excerpt: string; 
-  content: string; 
-  imageBase64?: string; 
+export async function updateBlogAction(id: number, data: {
+  title: string;
+  excerpt: string;
+  content: string;
+  imageBase64?: string;
   kategoriIds: number[];
 }) {
   try {
@@ -135,11 +135,11 @@ export async function updateBlogAction(id: number, data: {
 
     // 3. Tentukan gambar mana yang dipakai
     let imagePath = postLama.image; // Secara default, gunakan path gambar lama
-    
+
     // Jika user mengupload gambar baru, simpan gambar baru tersebut
     if (data.imageBase64) {
       imagePath = await saveImageLocally(data.imageBase64, postLama.slug);
-      
+
       // Opsional: Hapus gambar lama dari hardisk server agar tidak menumpuk
       if (postLama.image) {
         const oldImagePath = path.join(process.cwd(), 'public', postLama.image);
@@ -153,14 +153,14 @@ export async function updateBlogAction(id: number, data: {
     await prisma.post.update({
       where: { id },
       data: {
-        title: data.title, 
-        excerpt: data.excerpt, 
-        content: data.content, 
+        title: data.title,
+        excerpt: data.excerpt,
+        content: data.content,
         image: imagePath,
         // Reset kategori lama (kosongkan), lalu pasang kategori yang baru dipilih
-        kategoris: { 
-          set: [], 
-          connect: data.kategoriIds.map((id) => ({ id })) 
+        kategoris: {
+          set: [],
+          connect: data.kategoriIds.map((id) => ({ id }))
         }
       },
     });
@@ -184,5 +184,34 @@ export async function incrementViews(slug: string) {
     });
   } catch (error) {
     console.error("Gagal menambah views:", error);
+  }
+}
+
+// D. ACTION HAPUS BLOG
+export async function deleteBlogAction(id: number) {
+  try {
+    // 1. Cari postingan untuk mendapatkan path gambar
+    const post = await prisma.post.findUnique({ where: { id } });
+    if (!post) {
+      return { success: false, message: "Postingan tidak ditemukan." };
+    }
+
+    // 2. Hapus gambar dari filesystem jika ada
+    if (post.image) {
+      const imagePath = path.join(process.cwd(), 'public', post.image);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+
+    // 3. Hapus dari database
+    await prisma.post.delete({ where: { id } });
+
+    // 4. Refresh halaman tabel blog
+    revalidatePath("/dashboard/blog");
+    return { success: true, message: "Blog berhasil dihapus." };
+  } catch (error) {
+    console.error("Error Delete Blog:", error);
+    return { success: false, message: "Gagal menghapus postingan." };
   }
 }

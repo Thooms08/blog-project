@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -161,11 +162,12 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
 
       {/* Thumbnail Artikel (Diperbaiki agar Proporsional & Responsif) */}
       {post.image ? (
-        <div className="w-full mb-10">
-          <img
+        <div className="w-full mb-10 relative h-96">
+          <Image
             src={post.image}
             alt={post.title}
-            className="w-full h-auto max-h-[400px] object-cover rounded-2xl shadow-md border border-slate-100"
+            fill
+            className="object-cover rounded-2xl shadow-md border border-slate-100"
           />
         </div>
       ) : (

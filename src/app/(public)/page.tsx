@@ -1,5 +1,4 @@
 import prisma from '@/lib/prisma';
-import Link from 'next/link';
 import PostGrid from '@/components/PostGrid';
 
 export const revalidate = 60; // ISR: Update tiap 60 detik

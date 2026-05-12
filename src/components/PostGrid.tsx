@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface PostGridProps {
     posts: Array<{
@@ -36,10 +37,11 @@ export default function PostGrid({ posts }: PostGridProps) {
                     >
                         <Link href={`/blog/${post.slug}`} className="block h-56 bg-orange-50 w-full overflow-hidden relative">
                             {post.image ? (
-                                <img
+                                <Image
                                     src={post.image}
                                     alt={post.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-orange-300">
