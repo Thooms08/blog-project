@@ -104,10 +104,6 @@ export default function LoginPage() {
             )}
           </button>
         </form>
-
-        <p className="mt-8 text-center text-slate-500 text-sm font-medium">
-          Belum punya akun? <Link href="/register" className="text-orange-600 font-bold hover:underline ml-1">Daftar Akun</Link>
-        </p>
       </div>
     </main>
   );

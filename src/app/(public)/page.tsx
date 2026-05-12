@@ -56,8 +56,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
         {posts.length === 0 ? (
           <div className="text-center text-slate-500 py-16 bg-white rounded-2xl shadow-sm border border-slate-100">
-            <span className="text-5xl mb-4 block">📭</span>
-            <p className="text-lg font-medium">Belum ada artikel di kategori ini.</p>
+            <span className="text-5xl mb-4 block"></span>
+            <p className="text-lg font-medium">Belum ada blog di kategori ini.</p>
           </div>
         ) : (
           <PostGrid posts={posts} />

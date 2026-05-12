@@ -28,7 +28,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* SIDEBAR - Desktop */}
       <aside className={`hidden md:flex ${isOpen ? "w-64" : "w-20"} transition-all duration-300 border-r-2 border-orange-500/20 bg-slate-900 flex-col`}>
         <div className="p-4 md:p-6 flex items-center justify-between">
-          {isOpen && <span className="font-black italic text-orange-500 tracking-tighter text-lg md:text-xl">ORANGE_SYSTEM</span>}
+          {isOpen && <span className="font-black italic text-orange-500 tracking-tighter text-lg md:text-xl">Blog Flavory.id</span>}
           <button onClick={() => setIsOpen(!isOpen)} className="text-orange-500 hover:scale-110 transition-transform">
             <i className={`fas ${isOpen ? "fa-indent" : "fa-outdent"} text-lg`}></i>
           </button>

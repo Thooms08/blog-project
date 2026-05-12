@@ -45,10 +45,6 @@ export default async function RootLayout({
                 <i className="fa-solid fa-house"></i> Beranda
               </Link>
 
-              <Link href="/tentang" className="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors flex items-center gap-2">
-                <i className="fa-solid fa-circle-info"></i> Tentang
-              </Link>
-
               <Link href="/kontak" className="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors flex items-center gap-2">
                 <i className="fa-solid fa-envelope"></i> Kontak
               </Link>
@@ -94,7 +90,7 @@ export default async function RootLayout({
 
         <footer className="w-full bg-white border-t border-slate-100 py-10 text-center mt-20">
           <p className="text-slate-500 text-sm font-medium flex items-center justify-center gap-2">
-            <i className="fa-regular fa-copyright"></i> {new Date().getFullYear()} Blog.Flavory.id — Dibuat dengan <i className="fa-solid fa-heart text-red-500 animate-pulse"></i> untuk pecinta rasa.
+            <i className="fa-regular fa-copyright"></i> {new Date().getFullYear()} Blog.Flavory.id — All Rights Reserved
           </p>
         </footer>
       </body>

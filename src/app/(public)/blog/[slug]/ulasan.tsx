@@ -119,7 +119,7 @@ export default function FormUlasanPrivat({ postId }: FormUlasanProps) {
           {isLoading ? (
             <><i className="fa-solid fa-spinner animate-spin"></i> Mengirim...</>
           ) : (
-            <><i className="fa-regular fa-paper-plane"></i> Kirim Ulasan Privat</>
+            <><i className="fa-regular fa-paper-plane"></i> Kirim Ulasan</>
           )}
         </button>
       </form>
