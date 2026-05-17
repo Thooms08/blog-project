@@ -81,15 +81,13 @@ export default function ClientDashboard({ initialData }: DashboardProps) {
         const timeInterval = setInterval(updateTime, 1000);
 
         // Character animation
-        const handleMouseMove = (e: MouseEvent) => {
+        const handleMouseMove = () => {
             const randomX = Math.random() * 100 - 50;
             const randomY = Math.random() * 100 - 50;
             setCharacterPos({ x: randomX, y: randomY });
         };
 
-        const animationInterval = setInterval(() => {
-            handleMouseMove(new MouseEvent('move'));
-        }, 2000);
+        const animationInterval = setInterval(handleMouseMove, 2000);
 
         window.addEventListener('mousemove', handleMouseMove);
 
