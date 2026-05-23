@@ -69,7 +69,7 @@ export default function PostGrid({ posts }: PostGridProps) {
                                 </span>
                                 <span className="text-xs font-medium text-slate-500 flex items-center gap-2">
                                     <i className="fa-solid fa-eye text-orange-400"></i>
-                                    {post.views.toLocaleString()} ditonton
+                                    {post.views.toLocaleString()} views
                                 </span>
                             </div>
 

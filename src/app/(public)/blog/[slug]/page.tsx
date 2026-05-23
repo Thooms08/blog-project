@@ -172,7 +172,7 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
         </div>
       ) : (
         <div className="w-full h-48 md:h-64 rounded-2xl bg-orange-50 flex items-center justify-center mb-10 border border-orange-100">
-          <span className="text-5xl">🍊</span>
+          <span className="text-5xl"></span>
         </div>
       )}
 
@@ -187,7 +187,7 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-orange-500 font-bold mb-2">Rekomendasi</p>
-              <h2 className="text-2xl font-bold text-slate-900">Artikel populer di kategori ini</h2>
+              <h2 className="text-2xl font-bold text-slate-900">Blog populer di kategori ini</h2>
             </div>
             <p className="text-sm text-slate-500 max-w-xl">
               Ditampilkan berdasarkan jumlah tayangan terbanyak dari kategori yang sama.
