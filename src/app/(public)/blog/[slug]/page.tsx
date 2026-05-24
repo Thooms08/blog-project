@@ -13,6 +13,8 @@ interface BlogDetailProps {
   };
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: BlogDetailProps): Promise<Metadata> {
   const post = await prisma.post.findUnique({
     where: { slug: params.slug },

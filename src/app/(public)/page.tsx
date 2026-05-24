@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import PostGrid from '@/components/PostGrid';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 60; // ISR: Update tiap 60 detik
 
 interface HomePageProps {

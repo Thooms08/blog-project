@@ -1,6 +1,8 @@
 import prisma from '@/lib/prisma';
 import ClientDashboard from './ClientDashboard';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   // Fetch data on server
   const posts = await prisma.post.findMany({ orderBy: { createdAt: 'desc' } });

@@ -1,5 +1,7 @@
 import { getUlasans } from '@/lib/actions/ulasan.actions';
 
+export const dynamic = 'force-dynamic';
+
 export default async function UlasanPage() {
     const result = await getUlasans();
 

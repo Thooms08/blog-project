@@ -4,6 +4,8 @@ import Link from "next/link";
 import IdentityForm from "./IdentityForm"; // Impor Komponen Client Identitas
 import SecurityForm from "./SecurityForm"; // Impor Komponen Client Keamanan
 
+export const dynamic = 'force-dynamic';
+
 export default async function EditProfilePage() {
   // 1. Ambil data user langsung dari server (Prisma)
   const user = await prisma.user.findFirst({

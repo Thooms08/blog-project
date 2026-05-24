@@ -1,8 +1,5 @@
 import { MetadataRoute } from 'next';
-import { PrismaClient } from '@prisma/client';
-
-// Inisialisasi Prisma Client
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://blog.flavory.id';
@@ -57,8 +54,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       },
     ];
-  } finally {
-    // Menutup koneksi Prisma setelah selesai agar tidak terjadi kebocoran koneksi memori
-    await prisma.$disconnect();
   }
 }

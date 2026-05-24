@@ -10,6 +10,8 @@ const geistSans = localFont({
   weight: "100 900",
 });
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://blog.flavory.id'),
   title: "Blog Flavory.id - Eksplorasi Rasa dalam Tulisan",
