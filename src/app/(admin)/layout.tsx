@@ -53,7 +53,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* MOBILE HEADER */}
       <div className="md:hidden bg-slate-900 border-b border-orange-500/20 p-4 flex items-center justify-between sticky top-0 z-40">
-        <span className="font-black italic text-orange-500 text-lg">ORANGE_SYSTEM</span>
+        <span className="font-black italic text-orange-500 text-lg">DASHBOARD ADMIN</span>
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="text-orange-500 hover:scale-110 transition-transform text-xl"

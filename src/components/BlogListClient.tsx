@@ -3,7 +3,9 @@
 import { deleteBlogAction } from "@/lib/actions/blog.actions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
+
+const DEFAULT_VISIBLE_COUNT = 20;
 
 interface Post {
     id: number;
@@ -20,6 +22,12 @@ interface BlogListClientProps {
 export default function BlogListClient({ posts }: BlogListClientProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
+    const [showAll, setShowAll] = useState(false);
+
+    const visiblePosts = useMemo(
+        () => (showAll ? posts : posts.slice(0, DEFAULT_VISIBLE_COUNT)),
+        [posts, showAll]
+    );
 
     const handleDelete = async (id: number) => {
         if (!confirm("Apakah Anda yakin ingin menghapus postingan ini?")) {
@@ -76,7 +84,7 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
                                 <td colSpan={4} className="p-10 text-center text-slate-600 font-mono italic">DATA_VOID: BELUM ADA POSTINGAN</td>
                             </tr>
                         ) : (
-                            posts.map((post) => (
+                            visiblePosts.map((post) => (
                                 <tr key={post.id} className="hover:bg-slate-800/50 transition-colors group">
                                     <td className="p-4">
                                         <p className="font-bold text-slate-200 group-hover:text-orange-400 transition-colors">{post.title}</p>
@@ -117,7 +125,7 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
                         DATA_VOID: BELUM ADA POSTINGAN
                     </div>
                 ) : (
-                    posts.map((post) => (
+                    visiblePosts.map((post) => (
                         <div key={post.id} className="bg-slate-900 rounded-xl border border-slate-800 p-4 hover:border-orange-500 transition-all">
                             <div className="space-y-3">
                                 <div>
@@ -154,6 +162,24 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
                     ))
                 )}
             </div>
+
+            {posts.length > DEFAULT_VISIBLE_COUNT && (
+                <div className="text-center pt-2">
+                    <button
+                        type="button"
+                        onClick={() => setShowAll((prev) => !prev)}
+                        className="inline-flex items-center justify-center gap-2 rounded-lg border border-orange-500/50 bg-orange-600/20 px-6 py-3 text-xs font-black uppercase tracking-widest text-orange-400 transition hover:bg-orange-600 hover:text-white"
+                    >
+                        <i className={`fas ${showAll ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+                        {showAll ? 'Tampilkan 20 Teratas' : 'Lihat Semua Blog'}
+                    </button>
+                    {!showAll && (
+                        <p className="mt-3 text-xs font-mono text-slate-500 uppercase tracking-widest">
+                            Menampilkan {visiblePosts.length} dari {posts.length} postingan
+                        </p>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

@@ -35,17 +35,18 @@ export default function PostGrid({ posts }: PostGridProps) {
                         key={post.id}
                         className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 overflow-hidden flex flex-col group"
                     >
-                        <Link href={`/blog/${post.slug}`} className="block h-56 bg-orange-50 w-full overflow-hidden relative">
+                        <Link href={`/blog/${post.slug}`} className="block bg-orange-50 w-full overflow-hidden relative">
                             {post.image ? (
                                 <Image
                                     src={post.image}
                                     alt={post.title}
-                                    fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                    width={800}
+                                    height={600}
+                                    className="w-full h-auto max-h-72 object-contain mx-auto group-hover:scale-[1.02] transition-transform duration-500"
                                     unoptimized={true}
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-orange-300">
+                                <div className="w-full h-48 flex items-center justify-center text-orange-300">
                                     <span className="text-5xl">🍊</span>
                                 </div>
                             )}

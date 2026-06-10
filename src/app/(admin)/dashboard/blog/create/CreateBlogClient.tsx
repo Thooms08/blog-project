@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBlogAction, updateBlogAction } from '@/lib/actions/blog.actions';
@@ -16,6 +15,8 @@ type Kategori = { id: number; nama: string };
 // Tambahkan tipe untuk Edit Mode
 type PostData = { id: number; title: string; excerpt: string | null; content: string; image: string | null; kategoris: { id: number }[] };
 
+const EXCERPT_MAX_LENGTH = 150;
+
 export default function CreateBlogClient({ kategoris, initialData }: { kategoris: Kategori[], initialData?: PostData }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -24,7 +25,7 @@ export default function CreateBlogClient({ kategoris, initialData }: { kategoris
 
   // States
   const [title, setTitle] = useState(initialData?.title || "");
-  const [excerpt, setExcerpt] = useState(initialData?.excerpt || "");
+  const [excerpt, setExcerpt] = useState(() => (initialData?.excerpt || "").slice(0, EXCERPT_MAX_LENGTH));
   const [content, setContent] = useState(initialData?.content || "");
   const [selectedKategoris, setSelectedKategoris] = useState<number[]>(
     initialData?.kategoris.map(k => k.id) || []
@@ -36,6 +37,10 @@ export default function CreateBlogClient({ kategoris, initialData }: { kategoris
 
   const toggleKategori = (id: number) => {
     setSelectedKategoris(prev => prev.includes(id) ? prev.filter(kId => kId !== id) : [...prev, id]);
+  };
+
+  const handleExcerptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setExcerpt(e.target.value.slice(0, EXCERPT_MAX_LENGTH));
   };
 
   // Handler Upload Thumbnail Max 1MB
@@ -61,6 +66,7 @@ export default function CreateBlogClient({ kategoris, initialData }: { kategoris
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (content.trim() === "") return CyberAlert.error("ERROR", "Konten blog tidak boleh kosong.");
+    if (excerpt.length > EXCERPT_MAX_LENGTH) return CyberAlert.error("ERROR", `Excerpt maksimal ${EXCERPT_MAX_LENGTH} karakter.`);
 
     startTransition(async () => {
       const payload = { title, excerpt, content, imageBase64, kategoriIds: selectedKategoris };
@@ -97,7 +103,17 @@ export default function CreateBlogClient({ kategoris, initialData }: { kategoris
           </div>
           <div className="space-y-2">
             <label className="text-[10px] font-bold text-orange-500 uppercase tracking-widest">Excerpt_(Ringkasan_Singkat)</label>
-            <textarea placeholder="Tuliskan ringkasan 1-2 kalimat..." value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={3} className={`${inputClass} resize-none`} />
+            <textarea
+              placeholder="Tuliskan ringkasan 1-2 kalimat..."
+              value={excerpt}
+              onChange={handleExcerptChange}
+              maxLength={EXCERPT_MAX_LENGTH}
+              rows={3}
+              className={`${inputClass} resize-none`}
+            />
+            <p className={`text-right text-[10px] font-mono tracking-widest ${excerpt.length >= EXCERPT_MAX_LENGTH ? "text-orange-500" : "text-slate-500"}`}>
+              {excerpt.length}/{EXCERPT_MAX_LENGTH}
+            </p>
           </div>
         </div>
 
@@ -106,17 +122,31 @@ export default function CreateBlogClient({ kategoris, initialData }: { kategoris
           <h2 className="text-xl font-black text-white uppercase tracking-widest mb-2 flex items-center gap-3">
             <i className="fas fa-image text-orange-500"></i> Thumbnail
           </h2>
-          <div className="flex-1 border-2 border-dashed border-slate-700 rounded-xl relative overflow-hidden group flex items-center justify-center bg-slate-950">
+          <div className="min-h-[220px] sm:min-h-[260px] lg:min-h-[280px] w-full border-2 border-dashed border-slate-700 rounded-xl relative overflow-hidden group bg-slate-950">
             {imagePreview ? (
-              <Image src={imagePreview} alt="Preview" fill className="object-cover opacity-60 group-hover:opacity-30 transition-all" unoptimized={true} />
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imagePreview}
+                  alt="Preview thumbnail"
+                  className="absolute inset-0 w-full h-full object-contain opacity-90 group-hover:opacity-70 transition-all pointer-events-none"
+                />
+                {isEditMode && !imageBase64 && (
+                  <span className="absolute bottom-2 left-2 right-2 text-center text-[10px] font-mono text-orange-400 bg-slate-950/80 py-1 rounded pointer-events-none">
+                    Thumbnail saat ini — klik untuk ganti
+                  </span>
+                )}
+              </>
             ) : (
-              <div className="text-center text-slate-500 font-mono text-xs">
-                <i className="fas fa-cloud-upload-alt text-3xl mb-2 text-slate-600"></i>
-                <p>Klik / Drag File</p>
-                <p className="text-[10px] text-orange-500 mt-1">MAX 1 MB</p>
+              <div className="absolute inset-0 flex items-center justify-center text-center text-slate-500 font-mono text-xs">
+                <div>
+                  <i className="fas fa-cloud-upload-alt text-3xl mb-2 text-slate-600"></i>
+                  <p>Klik / Drag File</p>
+                  <p className="text-[10px] text-orange-500 mt-1">MAX 1 MB</p>
+                </div>
               </div>
             )}
-            <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+            <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 z-10 w-full h-full opacity-0 cursor-pointer" />
           </div>
         </div>
       </div>

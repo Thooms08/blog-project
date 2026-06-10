@@ -66,6 +66,8 @@ async function saveImageLocally(base64Data: string, slug: string) {
 // FUNGSI UTAMA (SERVER ACTIONS)
 // ==========================================
 
+const EXCERPT_MAX_LENGTH = 150;
+
 // A. ACTION BUAT BLOG BARU
 export async function createBlogAction(data: {
   title: string;
@@ -79,6 +81,11 @@ export async function createBlogAction(data: {
     if (!data.title || !data.content) {
       return { success: false, message: "Judul dan Konten wajib diisi." };
     }
+    if (data.excerpt.length > EXCERPT_MAX_LENGTH) {
+      return { success: false, message: `Excerpt maksimal ${EXCERPT_MAX_LENGTH} karakter.` };
+    }
+
+    const excerpt = data.excerpt.slice(0, EXCERPT_MAX_LENGTH);
 
     // 2. Dapatkan Slug Unik
     const slug = await createUniqueSlug(data.title);
@@ -94,7 +101,7 @@ export async function createBlogAction(data: {
       data: {
         title: data.title,
         slug: slug,
-        excerpt: data.excerpt,
+        excerpt: excerpt,
         content: data.content,
         image: imagePath,
         // Menyambungkan relasi Many-to-Many Kategori secara otomatis
@@ -126,6 +133,11 @@ export async function updateBlogAction(id: number, data: {
     if (!data.title || !data.content) {
       return { success: false, message: "Judul dan Konten wajib diisi." };
     }
+    if (data.excerpt.length > EXCERPT_MAX_LENGTH) {
+      return { success: false, message: `Excerpt maksimal ${EXCERPT_MAX_LENGTH} karakter.` };
+    }
+
+    const excerpt = data.excerpt.slice(0, EXCERPT_MAX_LENGTH);
 
     // 2. Cari postingan lama untuk mengambil slug dan gambar lamanya
     const postLama = await prisma.post.findUnique({ where: { id } });
@@ -154,7 +166,7 @@ export async function updateBlogAction(id: number, data: {
       where: { id },
       data: {
         title: data.title,
-        excerpt: data.excerpt,
+        excerpt: excerpt,
         content: data.content,
         image: imagePath,
         // Reset kategori lama (kosongkan), lalu pasang kategori yang baru dipilih

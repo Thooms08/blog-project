@@ -48,7 +48,9 @@ export default function ClientDashboard({ initialData }: DashboardProps) {
                 const response = await fetch('/api/dashboard');
                 if (response.ok) {
                     const data = await response.json();
-                    setDashboardData(data);
+                    if (typeof data.totalViews === 'number' && typeof data.totalBlog === 'number') {
+                        setDashboardData({ totalViews: data.totalViews, totalBlog: data.totalBlog });
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -115,13 +117,21 @@ export default function ClientDashboard({ initialData }: DashboardProps) {
                     </div>
                 </div>
 
-                {/* Stats Skeleton */}
+                {/* Stats — tampilkan data server segera */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-8 rounded-2xl border-2 border-blue-500/50 shadow-lg">
-                        <div className="h-20 bg-slate-700 rounded w-48"></div>
+                        <p className="text-xs font-mono text-blue-400 tracking-widest mb-2">TOTAL_REACH</p>
+                        <p className="text-5xl md:text-6xl font-black text-blue-300">
+                            {(initialData.totalViews ?? 0).toLocaleString()}
+                        </p>
+                        <p className="text-sm font-mono text-blue-500 mt-2">VIEWS</p>
                     </div>
                     <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-8 rounded-2xl border-2 border-purple-500/50 shadow-lg">
-                        <div className="h-20 bg-slate-700 rounded w-48"></div>
+                        <p className="text-xs font-mono text-purple-400 tracking-widest mb-2">TOTAL_CONTENT</p>
+                        <p className="text-5xl md:text-6xl font-black text-purple-300">
+                            {initialData.totalBlog ?? 0}
+                        </p>
+                        <p className="text-sm font-mono text-purple-500 mt-2">POSTS</p>
                     </div>
                 </div>
             </div>
@@ -165,7 +175,7 @@ export default function ClientDashboard({ initialData }: DashboardProps) {
                         <div>
                             <p className="text-xs font-mono text-blue-400 tracking-widest mb-2">TOTAL_REACH</p>
                             <p className="text-5xl md:text-6xl font-black text-blue-300">
-                                {dashboardData.totalViews.toLocaleString()}
+                                {(dashboardData.totalViews ?? 0).toLocaleString()}
                             </p>
                             <p className="text-sm font-mono text-blue-500 mt-2">VIEWS</p>
                         </div>
@@ -179,7 +189,7 @@ export default function ClientDashboard({ initialData }: DashboardProps) {
                         <div>
                             <p className="text-xs font-mono text-purple-400 tracking-widest mb-2">TOTAL_CONTENT</p>
                             <p className="text-5xl md:text-6xl font-black text-purple-300">
-                                {dashboardData.totalBlog}
+                                {dashboardData.totalBlog ?? 0}
                             </p>
                             <p className="text-sm font-mono text-purple-500 mt-2">POSTS</p>
                         </div>

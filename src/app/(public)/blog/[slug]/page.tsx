@@ -162,14 +162,15 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
         slug={params.slug}
       />
 
-      {/* Thumbnail Artikel (Diperbaiki agar Proporsional & Responsif) */}
+      {/* Thumbnail Artikel — proporsional sesuai orientasi upload */}
       {post.image ? (
-        <div className="w-full mb-10 relative h-96">
+        <div className="w-full mb-10 flex justify-center rounded-2xl overflow-hidden border border-slate-100 bg-slate-50 shadow-md">
           <Image
             src={post.image}
             alt={post.title}
-            fill
-            className="object-cover rounded-2xl shadow-md border border-slate-100"
+            width={1200}
+            height={900}
+            className="w-full max-w-full h-auto max-h-[28rem] object-contain"
             unoptimized={true}
           />
         </div>
