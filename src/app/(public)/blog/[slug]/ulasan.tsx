@@ -49,7 +49,7 @@ export default function FormUlasanPrivat({ postId }: FormUlasanProps) {
         </div>
         <h3 className="text-2xl font-extrabold text-slate-800 mb-2">Selesai!</h3>
         <p className="text-orange-600 font-semibold mb-1">{status.message}</p>
-        <p className="text-sm text-slate-500 font-medium">Ulasan ini bersifat privat dan hanya dilihat oleh pengelola blog.</p>
+        <p className="text-sm text-slate-500 font-medium">Ulasan ini bersifat privat dan hanya dilihat oleh admin.</p>
       </div>
     );
   }
@@ -69,7 +69,7 @@ export default function FormUlasanPrivat({ postId }: FormUlasanProps) {
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {/* Rating Bintang Interaktif */}
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Seberapa bermanfaat artikel ini? <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">Seberapa bermanfaat blog ini? <span className="text-red-500">*</span></label>
           <div className="flex gap-1">
             {[1, 2, 3, 4, 5].map((star) => (
               <button

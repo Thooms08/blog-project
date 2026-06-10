@@ -108,7 +108,7 @@ export default function CreateBlogClient({ kategoris, initialData }: { kategoris
           </h2>
           <div className="flex-1 border-2 border-dashed border-slate-700 rounded-xl relative overflow-hidden group flex items-center justify-center bg-slate-950">
             {imagePreview ? (
-              <Image src={imagePreview} alt="Preview" fill className="object-cover opacity-60 group-hover:opacity-30 transition-all" />
+              <Image src={imagePreview} alt="Preview" fill className="object-cover opacity-60 group-hover:opacity-30 transition-all" unoptimized={true} />
             ) : (
               <div className="text-center text-slate-500 font-mono text-xs">
                 <i className="fas fa-cloud-upload-alt text-3xl mb-2 text-slate-600"></i>

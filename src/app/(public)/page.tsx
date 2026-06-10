@@ -42,7 +42,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             Selamat Datang di Blog.Flavory.Id
           </h1>
           <p className="text-lg text-orange-100 max-w-2xl mx-auto">
-            Temukan berbagai cerita, ide, dan wawasan terbaru yang penuh rasa di sini.
+            Jelajahi blog seputar bisnis, teknologi, dan berbagai inspirasi menarik lainnya di Blog Flavory.id.
           </p>
         </header>
       )}

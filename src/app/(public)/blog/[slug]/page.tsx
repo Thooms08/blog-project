@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: BlogDetailProps): Promise<Met
   });
 
   if (!post) {
-    return { title: 'Artikel Tidak Ditemukan - Blog Flavory' };
+    return { title: 'Blog Tidak Ditemukan - Blog Flavory' };
   }
 
   const postDescription = post.excerpt || post.content.substring(0, 150);
@@ -151,7 +151,7 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
 
           <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-orange-700 font-semibold shadow-sm">
             <i className="fa-solid fa-eye"></i>
-            {displayViews.toLocaleString()} ditonton
+            {displayViews.toLocaleString()} views
           </div>
         </div>
       </header>
@@ -170,6 +170,7 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
             alt={post.title}
             fill
             className="object-cover rounded-2xl shadow-md border border-slate-100"
+            unoptimized={true}
           />
         </div>
       ) : (
