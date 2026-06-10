@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 const motivations = [
     { icon: 'fa-solid fa-star', text: 'Setiap klik adalah awal dari cerita baru!' },
@@ -16,14 +16,10 @@ const motivations = [
 ];
 
 interface DashboardProps {
-    initialData: {
-        totalViews: number;
-        totalBlog: number;
-    };
+    stats: ReactNode;
 }
 
-export default function ClientDashboard({ initialData }: DashboardProps) {
-    const [dashboardData, setDashboardData] = useState(initialData);
+export default function ClientDashboard({ stats }: DashboardProps) {
     const [time, setTime] = useState<string>('00:00:00');
     const [date, setDate] = useState<string>('Loading...');
     const [motivation, setMotivation] = useState(motivations[0]);
@@ -41,23 +37,6 @@ export default function ClientDashboard({ initialData }: DashboardProps) {
             link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
             document.head.appendChild(link);
         }
-
-        // Fetch data on mount
-        const fetchDashboardData = async () => {
-            try {
-                const response = await fetch('/api/dashboard');
-                if (response.ok) {
-                    const data = await response.json();
-                    if (typeof data.totalViews === 'number' && typeof data.totalBlog === 'number') {
-                        setDashboardData({ totalViews: data.totalViews, totalBlog: data.totalBlog });
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchDashboardData();
 
         // Set random motivation
         setMotivation(motivations[Math.floor(Math.random() * motivations.length)]);
@@ -103,7 +82,6 @@ export default function ClientDashboard({ initialData }: DashboardProps) {
     if (!mounted) {
         return (
             <div className="space-y-8 animate-in fade-in duration-500">
-                {/* Header Skeleton */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-2xl border-2 border-orange-500/30 shadow-xl">
                         <div className="space-y-4">
@@ -117,23 +95,7 @@ export default function ClientDashboard({ initialData }: DashboardProps) {
                     </div>
                 </div>
 
-                {/* Stats — tampilkan data server segera */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-8 rounded-2xl border-2 border-blue-500/50 shadow-lg">
-                        <p className="text-xs font-mono text-blue-400 tracking-widest mb-2">TOTAL_REACH</p>
-                        <p className="text-5xl md:text-6xl font-black text-blue-300">
-                            {(initialData.totalViews ?? 0).toLocaleString()}
-                        </p>
-                        <p className="text-sm font-mono text-blue-500 mt-2">VIEWS</p>
-                    </div>
-                    <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-8 rounded-2xl border-2 border-purple-500/50 shadow-lg">
-                        <p className="text-xs font-mono text-purple-400 tracking-widest mb-2">TOTAL_CONTENT</p>
-                        <p className="text-5xl md:text-6xl font-black text-purple-300">
-                            {initialData.totalBlog ?? 0}
-                        </p>
-                        <p className="text-sm font-mono text-purple-500 mt-2">POSTS</p>
-                    </div>
-                </div>
+                {stats}
             </div>
         );
     }
@@ -167,36 +129,7 @@ export default function ClientDashboard({ initialData }: DashboardProps) {
                 </div>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Total Views Card */}
-                <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-8 rounded-2xl border-2 border-blue-500/50 shadow-lg hover:border-blue-400 transition-all">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="text-xs font-mono text-blue-400 tracking-widest mb-2">TOTAL_REACH</p>
-                            <p className="text-5xl md:text-6xl font-black text-blue-300">
-                                {(dashboardData.totalViews ?? 0).toLocaleString()}
-                            </p>
-                            <p className="text-sm font-mono text-blue-500 mt-2">VIEWS</p>
-                        </div>
-                        <i className="fa-solid fa-eye text-5xl text-blue-400 opacity-20"></i>
-                    </div>
-                </div>
-
-                {/* Total Blog Card */}
-                <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-8 rounded-2xl border-2 border-purple-500/50 shadow-lg hover:border-purple-400 transition-all">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="text-xs font-mono text-purple-400 tracking-widest mb-2">TOTAL_CONTENT</p>
-                            <p className="text-5xl md:text-6xl font-black text-purple-300">
-                                {dashboardData.totalBlog ?? 0}
-                            </p>
-                            <p className="text-sm font-mono text-purple-500 mt-2">POSTS</p>
-                        </div>
-                        <i className="fa-solid fa-file-pen text-5xl text-purple-400 opacity-20"></i>
-                    </div>
-                </div>
-            </div>
+            {stats}
 
             {/* Animated Character Section */}
             <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-2xl border-2 border-orange-500/30 shadow-xl min-h-60 md:min-h-72 flex items-center justify-center relative overflow-hidden">
