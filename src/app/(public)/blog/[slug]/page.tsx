@@ -1,3 +1,15 @@
+/**
+ * =============================================================
+ * Blog Detail Page — /blog/[slug]
+ * =============================================================
+ *
+ * Halaman detail artikel dengan optimasi SEO:
+ * - Dynamic metadata (title, description, OG, Twitter)
+ * - JSON-LD Article structured data
+ * - Canonical URL per artikel
+ * - Robots directive
+ */
+
 import prisma from '@/lib/prisma';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -15,27 +27,55 @@ interface BlogDetailProps {
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * generateMetadata — Dynamic SEO Metadata per Artikel
+ *
+ * Menghasilkan meta tags yang unik untuk setiap artikel,
+ * termasuk Open Graph article tags dan robots directive.
+ */
 export async function generateMetadata({ params }: BlogDetailProps): Promise<Metadata> {
   const post = await prisma.post.findUnique({
     where: { slug: params.slug },
+    include: { kategoris: true },
   });
 
   if (!post) {
     return { title: 'Blog Tidak Ditemukan - Blog Flavory' };
   }
 
-  const postDescription = post.excerpt || post.content.substring(0, 150);
-  const imageUrl = post.image ? post.image : 'https://blog.flavory.id/logo.png';
+  // Bersihkan HTML tags dari excerpt/content untuk meta description
+  const cleanDescription = (post.excerpt || post.content.substring(0, 160))
+    .replace(/<[^>]*>/g, '')
+    .trim();
+  const imageUrl = post.image
+    ? (post.image.startsWith('http') ? post.image : `https://blog.flavory.id${post.image}`)
+    : 'https://blog.flavory.id/logo.png';
+  const articleUrl = `https://blog.flavory.id/blog/${params.slug}`;
 
   return {
-    title: `${post.title} | Blog Flavory.id`,
-    description: postDescription,
+    // Title menggunakan template dari parent layout: "%s | Blog Flavory.id"
+    title: post.title,
+    description: cleanDescription,
+
+    // Robots: izinkan index dan follow untuk halaman artikel
+    robots: {
+      index: true,
+      follow: true,
+    },
+
+    // Open Graph — dengan article-specific tags
     openGraph: {
       type: 'article',
       title: `${post.title} | Blog Flavory.id`,
-      description: postDescription,
-      url: `https://blog.flavory.id/blog/${params.slug}`,
+      description: cleanDescription,
+      url: articleUrl,
       siteName: 'Blog Flavory.id',
+      locale: 'id_ID',
+      // Article-specific OG tags
+      publishedTime: post.createdAt.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+      section: post.kategoris.length > 0 ? post.kategoris[0].nama : 'Umum',
+      authors: ['Admin Blog Flavory.id'],
       images: [
         {
           url: imageUrl,
@@ -45,14 +85,18 @@ export async function generateMetadata({ params }: BlogDetailProps): Promise<Met
         },
       ],
     },
+
+    // Twitter Card
     twitter: {
       card: 'summary_large_image',
       title: `${post.title} | Blog Flavory.id`,
-      description: postDescription,
+      description: cleanDescription,
       images: [imageUrl],
     },
+
+    // Canonical URL — mencegah duplikat konten
     alternates: {
-      canonical: `https://blog.flavory.id/blog/${params.slug}`,
+      canonical: articleUrl,
     },
   };
 }
@@ -109,8 +153,84 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
     });
   }
 
+  // =============================================================
+  // JSON-LD Article Structured Data
+  // Membantu Google menampilkan rich snippet artikel di hasil pencarian
+  // =============================================================
+  const articleImageUrl = post.image
+    ? (post.image.startsWith('http') ? post.image : `https://blog.flavory.id${post.image}`)
+    : 'https://blog.flavory.id/logo.png';
+
+  const jsonLdArticle = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": (post.excerpt || post.content.substring(0, 160)).replace(/<[^>]*>/g, '').trim(),
+    "image": articleImageUrl,
+    "datePublished": post.createdAt.toISOString(),
+    "dateModified": post.updatedAt.toISOString(),
+    "author": {
+      "@type": "Person",
+      "name": "Admin",
+      "url": "https://blog.flavory.id",
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Blog Flavory.id",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://blog.flavory.id/logo.png",
+      },
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://blog.flavory.id/blog/${params.slug}`,
+    },
+    "articleSection": post.kategoris.length > 0 ? post.kategoris[0].nama : "Umum",
+    "wordCount": post.content.replace(/<[^>]*>/g, '').split(/\s+/).length,
+    "inLanguage": "id-ID",
+  };
+
+  // =============================================================
+  // JSON-LD BreadcrumbList — Navigasi breadcrumb untuk Google
+  // =============================================================
+  const jsonLdBreadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Beranda",
+        "item": "https://blog.flavory.id",
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://blog.flavory.id/blog",
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": post.title,
+        "item": `https://blog.flavory.id/blog/${params.slug}`,
+      },
+    ],
+  };
+
   return (
     <article className="max-w-3xl mx-auto py-12 px-6">
+
+      {/* === JSON-LD Structured Data untuk artikel ini === */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdArticle) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
+      />
 
       {/* Tombol Kembali */}
       <Link href="/" className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-600 font-medium mb-8 transition-colors">

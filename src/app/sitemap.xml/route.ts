@@ -1,3 +1,15 @@
+/**
+ * =============================================================
+ * sitemap.xml — Dynamic Sitemap Generator untuk Blog Flavory.id
+ * =============================================================
+ *
+ * Sitemap yang dioptimasi SEO:
+ * - Halaman utama dan blog listing
+ * - Semua halaman artikel dengan lastmod
+ * - Image sitemap extension (membantu Google Image Search)
+ * - Halaman kategori sebagai URL terpisah
+ */
+
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
@@ -8,30 +20,72 @@ export async function GET() {
   const baseUrl = 'https://blog.flavory.id';
 
   try {
-    // Ambil data artikel langsung dari database
+    // -------------------------------------------------------
+    // 1. Ambil data artikel beserta gambar dan kategori
+    // -------------------------------------------------------
     const posts = await prisma.post.findMany({
       select: {
         slug: true,
+        title: true,
+        image: true,
         updatedAt: true,
       },
     });
 
-    // Susun baris URL blog secara dinamis
+    // -------------------------------------------------------
+    // 2. Ambil daftar kategori untuk halaman filter
+    // -------------------------------------------------------
+    const kategoris = await prisma.kategori.findMany({
+      select: {
+        nama: true,
+        updated_at: true,
+      },
+    });
+
+    // -------------------------------------------------------
+    // 3. Susun XML untuk setiap artikel (dengan image extension)
+    // -------------------------------------------------------
     const postUrlsXml = posts
       .map((post) => {
+        // Bangun URL gambar absolut jika tersedia
+        const imageTag = post.image
+          ? `\n    <image:image>\n      <image:loc>${
+              post.image.startsWith('http') ? post.image : `${baseUrl}${post.image}`
+            }</image:loc>\n      <image:title>${escapeXml(post.title)}</image:title>\n    </image:image>`
+          : '';
+
         return `
   <url>
     <loc>${baseUrl}/blog/${post.slug}</loc>
     <lastmod>${new Date(post.updatedAt).toISOString()}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.6</priority>${imageTag}
   </url>`;
       })
       .join('');
 
-    // Gabungkan menjadi struktur XML utuh
+    // -------------------------------------------------------
+    // 4. Susun XML untuk setiap halaman kategori
+    // -------------------------------------------------------
+    const categoryUrlsXml = kategoris
+      .map((kat) => {
+        return `
+  <url>
+    <loc>${baseUrl}/?kategori=${encodeURIComponent(kat.nama)}</loc>
+    <lastmod>${new Date(kat.updated_at).toISOString()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>`;
+      })
+      .join('');
+
+    // -------------------------------------------------------
+    // 5. Gabungkan semua menjadi struktur XML utuh
+    //    Termasuk namespace image untuk Google Image Search
+    // -------------------------------------------------------
     const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>${baseUrl}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
@@ -43,10 +97,10 @@ export async function GET() {
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>${postUrlsXml}
+  </url>${postUrlsXml}${categoryUrlsXml}
 </urlset>`;
 
-    // Kembalikan respons berupa file XML asli, bukan HTML/JSON
+    // Kembalikan respons berupa file XML asli
     return new NextResponse(sitemapXml, {
       headers: {
         'Content-Type': 'application/xml',
@@ -66,4 +120,17 @@ export async function GET() {
       }
     );
   }
+}
+
+/**
+ * Escape karakter khusus XML agar tidak merusak struktur sitemap.
+ * Diperlukan untuk judul artikel yang mungkin mengandung &, <, >, dll.
+ */
+function escapeXml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
