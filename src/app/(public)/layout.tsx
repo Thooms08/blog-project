@@ -41,11 +41,11 @@ export const metadata: Metadata = {
   // Favicon dan icon
   icons: {
     icon: [
-      { url: '/logo.png', type: 'image/png', sizes: '32x32' },
-      { url: '/logo.png', type: 'image/png', sizes: '16x16' },
+      { url: '/public/logo.png', type: 'image/png', sizes: '32x32' },
+      { url: '/public/logo.png', type: 'image/png', sizes: '16x16' },
     ],
-    shortcut: '/logo.png',
-    apple: '/logo.png',
+    shortcut: '/public/logo.png',
+    apple: '/public/logo.png',
   },
 
   // Canonical URL — mencegah duplikat konten di Google
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     url: 'https://blog.flavory.id',
     images: [
       {
-        url: '/logo.png',
+        url: '/public/logo.png',
         alt: 'Blog Flavory.id — Informasi Seputar Flavory, Teknologi & Manajemen Bisnis',
         width: 1200,
         height: 630,
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Blog Flavory.id — Informasi Seputar Flavory, Teknologi & Manajemen Bisnis',
     description: 'Sumber informasi terpercaya seputar perkembangan Flavory.id, teknologi, dan manajemen bisnis.',
-    images: ['/logo.png'],
+    images: ['/public/logo.png'],
   },
 };
 
@@ -100,7 +100,7 @@ const jsonLdWebsite = {
     "url": "https://flavory.id",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://blog.flavory.id/logo.png",
+      "url": "https://blog.flavory.id/public/logo.png",
     },
   },
 };
@@ -114,7 +114,7 @@ const jsonLdOrganization = {
   "@type": "Organization",
   "name": "Flavory.id",
   "url": "https://flavory.id",
-  "logo": "https://blog.flavory.id/logo.png",
+  "logo": "https://blog.flavory.id/public/logo.png",
   "contactPoint": {
     "@type": "ContactPoint",
     "email": "adminku@flavory.id",

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 interface NavbarProps {
@@ -21,7 +20,8 @@ export default function Navbar({ categories }: NavbarProps) {
             <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex flex-col md:flex-row justify-between items-center">
                 {/* Logo */}
                 <Link href="/" className="text-2xl font-black text-orange-500 tracking-tighter hover:scale-105 transition-transform mb-4 md:mb-0 flex items-center gap-2">
-                    <Image src="/logo.png" alt="Logo Blog Flavory" width={32} height={32} />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="https://blog.flavory.id/public/logo.png" alt="Logo Blog Flavory" width={32} height={32} />
                     Blog.Flavory.id
                 </Link>
 

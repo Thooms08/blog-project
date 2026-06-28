@@ -9,6 +9,23 @@ PassengerStartupFile app.js
 # Prevent directory listing to hide file contents
 Options -Indexes
 
+RewriteEngine On
+
+# Redirect HTTP to HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# === STATIC FILES: Arahkan ke folder public/ ===
+# Jika request bukan ke folder public/ dan file ada di public/, forward ke sana
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f
+RewriteRule ^(.+)$ /public/$1 [L,QSA]
+
+# Jika request bukan ke folder public/ dan folder ada di public/, forward ke sana
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -d
+RewriteRule ^(.+)$ /public/$1 [L,QSA]
+
 # Protect sensitive files from being accessed
 <Files ".env*">
     Order allow,deny
@@ -34,11 +51,6 @@ Options -Indexes
     Header always set X-XSS-Protection "1; mode=block"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
-
-# Redirect HTTP to HTTPS for secure connections
-RewriteEngine On
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Block access to common backup and temporary files
 <FilesMatch "\.(bak|backup|old|tmp|temp|swp|swo)$">

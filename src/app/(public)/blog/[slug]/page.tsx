@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: BlogDetailProps): Promise<Met
     .trim();
   const imageUrl = post.image
     ? (post.image.startsWith('http') ? post.image : `https://blog.flavory.id${post.image}`)
-    : 'https://blog.flavory.id/logo.png';
+    : 'https://blog.flavory.id/public/logo.png';
   const articleUrl = `https://blog.flavory.id/blog/${params.slug}`;
 
   return {
@@ -159,7 +159,7 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
   // =============================================================
   const articleImageUrl = post.image
     ? (post.image.startsWith('http') ? post.image : `https://blog.flavory.id${post.image}`)
-    : 'https://blog.flavory.id/logo.png';
+    : 'https://blog.flavory.id/public/logo.png';
 
   const jsonLdArticle = {
     "@context": "https://schema.org",
@@ -179,7 +179,7 @@ export default async function BlogDetail({ params }: BlogDetailProps) {
       "name": "Blog Flavory.id",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://blog.flavory.id/logo.png",
+        "url": "https://blog.flavory.id/public/logo.png",
       },
     },
     "mainEntityOfPage": {

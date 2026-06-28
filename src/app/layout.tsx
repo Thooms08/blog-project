@@ -18,9 +18,9 @@ export default function RootLayout({
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="theme-color" content="#f97316" />
-                <link rel="icon" href="/logo.png" />
-                <link rel="shortcut icon" href="/logo.png" />
-                <link rel="apple-touch-icon" href="/logo.png" />
+                <link rel="icon" href="/public/logo.png" />
+                <link rel="shortcut icon" href="/public/logo.png" />
+                <link rel="apple-touch-icon" href="/public/logo.png" />
                 <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
                 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />

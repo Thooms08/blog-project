@@ -39,7 +39,7 @@ const BASE_URL = 'https://blog.flavory.id';
 const EXCERPT_MAX_LENGTH = 150;
 
 /** Placeholder gambar default jika post tidak memiliki cover image */
-const DEFAULT_COVER_IMAGE = `${BASE_URL}/logo.png`;
+const DEFAULT_COVER_IMAGE = `${BASE_URL}/public/logo.png`;
 
 /**
  * Daftar nama bulan dalam Bahasa Indonesia (disingkat 3 huruf).
@@ -123,8 +123,13 @@ function buildCoverImageUrl(imagePath: string | null): string {
     return imagePath;
   }
 
-  // Gabungkan base URL dengan path relatif
-  return `${BASE_URL}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
+  // Gabungkan base URL dengan path relatif, pastikan lewat /public/
+  const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+  // Jika path sudah pakai /public/, langsung gabung
+  if (cleanPath.startsWith('/public/')) {
+    return `${BASE_URL}${cleanPath}`;
+  }
+  return `${BASE_URL}/public${cleanPath}`;
 }
 
 // =============================================================
