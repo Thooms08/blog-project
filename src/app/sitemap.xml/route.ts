@@ -46,11 +46,12 @@ export async function GET() {
     // 3. Susun XML untuk setiap artikel (dengan image extension)
     // -------------------------------------------------------
     const postUrlsXml = posts
-      .map((post) => {
+      .map((post: { slug: string; title: string; image: string | null; updatedAt: Date }) => {
         // Bangun URL gambar absolut jika tersedia
-        const imageTag = post.image
+        const image = post.image;
+        const imageTag = image
           ? `\n    <image:image>\n      <image:loc>${
-              post.image.startsWith('http') ? post.image : `${baseUrl}${post.image}`
+              image.startsWith('http') ? image : `${baseUrl}${image}`
             }</image:loc>\n      <image:title>${escapeXml(post.title)}</image:title>\n    </image:image>`
           : '';
 
@@ -68,7 +69,7 @@ export async function GET() {
     // 4. Susun XML untuk setiap halaman kategori
     // -------------------------------------------------------
     const categoryUrlsXml = kategoris
-      .map((kat) => {
+      .map((kat: { nama: string; updated_at: Date }) => {
         return `
   <url>
     <loc>${baseUrl}/?kategori=${encodeURIComponent(kat.nama)}</loc>

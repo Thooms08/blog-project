@@ -62,14 +62,14 @@ export default function PostGrid({ posts }: PostGridProps) {
 
                         <div className="p-6 flex flex-col flex-grow">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-2">
-                                <span className="text-xs font-semibold text-slate-400">
+                                <span className="text-xs font-semibold text-slate-400" suppressHydrationWarning>
                                     {new Date(post.createdAt).toLocaleDateString('id-ID', {
                                         day: 'numeric',
                                         month: 'long',
                                         year: 'numeric',
                                     })}
                                 </span>
-                                <span className="text-xs font-medium text-slate-500 flex items-center gap-2">
+                                <span className="text-xs font-medium text-slate-500 flex items-center gap-2" suppressHydrationWarning>
                                     <i className="fa-solid fa-eye text-orange-400"></i>
                                     {post.views.toLocaleString()} views
                                 </span>

@@ -37,12 +37,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     <div className="w-full">
       {/* Header / Hero Section (Hanya tampil jika tidak sedang filter kategori) */}
       {!filterKategori && (
-        <header className="bg-orange-500 text-white py-20 px-6 text-center shadow-inner">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Selamat Datang di Blog.Flavory.Id
+        <header className="bg-orange-500 text-white py-10 px-6 text-center shadow-inner">
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-3">
+            Blog Flavory.id
           </h1>
-          <p className="text-lg text-orange-100 max-w-2xl mx-auto">
-            Jelajahi blog seputar bisnis, teknologi, dan berbagai inspirasi menarik lainnya di Blog Flavory.id.
+          <p className="text-base text-orange-100 max-w-xl mx-auto leading-relaxed">
+            Sumber informasi seputar perkembangan Flavory.id, wawasan teknologi terkini, dan strategi manajemen bisnis untuk para profesional Indonesia.
           </p>
         </header>
       )}

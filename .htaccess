@@ -1,18 +1,14 @@
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
-PassengerAppRoot "/home/flavoryi/public_html/blog"
+PassengerAppRoot "/home/flavoryi/blog.flavory.id"
 PassengerBaseURI "/"
-PassengerNodejs "/home/flavoryi/nodevenv/public_html/blog/20/bin/node"
+PassengerNodejs "/home/flavoryi/nodevenv/blog.flavory.id/22/bin/node"
 PassengerAppType node
 PassengerStartupFile app.js
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
-# --- MULAI KONFIGURASI NODE.JS (WAJIB ADA) ---
-PassengerAppRoot "/home/flavoryi/public_html/blog"
-PassengerBaseURI "/"
-PassengerAppType node
-PassengerStartupFile app.js
-# --- SELESAI KONFIGURASI NODE.JS ---
+
 # Prevent directory listing to hide file contents
 Options -Indexes
+
 # Protect sensitive files from being accessed
 <Files ".env*">
     Order allow,deny
@@ -30,6 +26,7 @@ Options -Indexes
     Order allow,deny
     Deny from all
 </Files>
+
 # Security headers to enhance web security
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options nosniff
@@ -37,21 +34,31 @@ Options -Indexes
     Header always set X-XSS-Protection "1; mode=block"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
+
 # Redirect HTTP to HTTPS for secure connections
 RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 # Block access to common backup and temporary files
 <FilesMatch "\.(bak|backup|old|tmp|temp|swp|swo)$">
     Order allow,deny
     Deny from all
 </FilesMatch>
+
 # Prevent access to .htaccess itself
 <Files ".htaccess">
     Order allow,deny
     Deny from all
 </Files>
+
 # Limit request methods to GET, POST, HEAD
 <LimitExcept GET POST HEAD>
     Deny from all
 </LimitExcept>
+
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+<IfModule Litespeed>
+SetEnv DATABASE_URL mariadb://flavoryi_adminku:Th0m4sFlavory112233!!@localhost:3306/flavoryi_blog
+</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END

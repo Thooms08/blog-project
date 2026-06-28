@@ -1,27 +1,27 @@
-const { createServer } = require('http');
-const { parse } = require('url');
-const next = require('next');
-const path = require('path');
+const { createServer } = require("http");
+const { parse } = require("url");
+const next = require("next");
+const path = require("path");
 
-// Memastikan aplikasi berjalan dalam mode production
-const dev = false;
-// dir: path.resolve(__dirname) memastikan Next.js mencari folder .next di tempat app.js berada
-const app = next({ dev, dir: path.resolve(__dirname) });
+const dev = process.env.NODE_ENV !== "production";
+const hostname = "localhost";
+const port = process.env.PORT || process.env.port || 3000;
+
+const app = next({ dev, hostname, port, dir: path.resolve(__dirname) });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
-  createServer((req, res) => {
-    const parsedUrl = parse(req.url, true);
-    
-    // Next.js secara otomatis menangani Route Group seperti (public) 
-    // selama folder .next hasil build sudah benar.
-    handle(req, res, parsedUrl);
-    
-  }).listen(process.env.PORT || 3000, (err) => {
+  createServer(async (req, res) => {
+    try {
+      const parsedUrl = parse(req.url, true);
+      await handle(req, res, parsedUrl);
+    } catch (err) {
+      console.error("Error occurred handling", req.url, err);
+      res.statusCode = 500;
+      res.end("internal server error");
+    }
+  }).listen(port, (err) => {
     if (err) throw err;
-    console.log('> Server ready on port ' + (process.env.PORT || 3000));
+    console.log(`> Ready on http://${hostname}:${port}`);
   });
-}).catch((ex) => {
-  console.error(ex.stack);
-  process.exit(1);
 });
